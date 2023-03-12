@@ -227,7 +227,7 @@ def get_wifi_conf(request):
 
     if len(ssid) == 0 or len(cityname) == 0: #wifi名称或者城市名称为空。
         return None
-    return (ssid, password,cityname)
+    return (ssid.replace('+',' '), password,cityname)
 
 
 def handle_wifi_configure(ssid, password):
@@ -391,19 +391,26 @@ def startAP():
                     if ret != None: #获取信息成功
                         
                         if city_judge(ret[2]): #有该城市
-                        
-                            d.fill(BLACK)
-                            d.printStr('Connecting...', 10, 50, RED, size=2)
-                            d.printStr(ret[0], 10, 110, WHITE, size=2)
                             
-                            #SSID带中文处理
+                            #SSID带中文和特殊字符处理
                             if '%' in ret[0]:
                                 print('wifi chinese')
                                 SSID = unquote(ret[0]).decode("gbk")
                             else:
                                 SSID = ret[0]
                             
-                            ret_ip = handle_wifi_configure(SSID, ret[1])
+                            #PASSWORD带中文和特殊字符处理
+                            if '%' in ret[1]:
+                                print('wifi chinese')
+                                PASSWORD = unquote(ret[1]).decode("gbk")
+                            else:
+                                PASSWORD = ret[1]
+                            
+                            d.fill(BLACK)
+                            d.printStr('Connecting...', 10, 50, RED, size=2)
+                            d.printStr(SSID, 10, 110, WHITE, size=2)
+                            
+                            ret_ip = handle_wifi_configure(SSID,PASSWORD)
                             print(ret_ip)
                             if ret_ip is not None:
                                 
@@ -411,7 +418,7 @@ def startAP():
                                 wifi_info = {'SSID':'','PASSWORD':''}
 
                                 wifi_info['SSID'] = SSID
-                                wifi_info['PASSWORD'] = ret[1]
+                                wifi_info['PASSWORD'] = PASSWORD
                                 wifi_info['CITY'] = unquote(ret[2]).decode("gbk")
                                 print(wifi_info)
                                 
