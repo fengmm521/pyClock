@@ -396,7 +396,7 @@ while 'wifi.txt' not in os.listdir():
     ap.startAP() #启动AP配网模式
 
 #启动看门狗，超时30秒。
-wdt = WDT(timeout=30000)
+wdt = WDT(timeout=60000)
 
 #连接WiFi
 while not WIFI_Connect(): #等待wifi连接        
